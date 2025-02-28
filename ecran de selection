@@ -1,0 +1,194 @@
+import pygame
+import subprocess
+import time
+import pygetwindow as gw
+
+
+
+
+# Initialisation de Pygame
+pygame.init()
+logo = pygame.image.load("consoles.jpg")  
+pygame.display.set_icon(logo)
+
+
+pygame.mixer.music.load("son.mp3")
+pygame.mixer.music.play(-1)
+
+
+taille_chat = (650,650)
+
+plage1 = pygame.image.load("0001.png")
+plage2 = pygame.image.load("0002.png")
+plage3 = pygame.image.load("0003.png")
+plage4 = pygame.image.load("0004.png")
+plage5 = pygame.image.load("0005.png")
+
+imgs =  {
+    0 : pygame.transform.scale(plage1, taille_chat),
+    1 : pygame.transform.scale(plage2, taille_chat),
+    2 : pygame.transform.scale(plage3, taille_chat),
+    3 : pygame.transform.scale(plage4, taille_chat),
+    4 : pygame.transform.scale(plage5, taille_chat)
+        }
+
+current_image = imgs[1]  # Image du chat qui s'affiche
+
+#alternance des deux images de chat pour donner l'impression qu'il court
+anim_timer = 0  # Chronomètre pour alterner les images
+anim_delai = 150  # Délai en millisecondes entre chaque alternance
+
+# Dimensions de la fenêtre
+screen_width, screen_height = 650, 650
+screen = pygame.display.set_mode((screen_width, screen_height))
+pygame.display.set_caption("Menu")
+
+# Définition des couleurs
+couleur = (200, 200, 255)
+blanc = (255, 255, 255)
+
+# Charger les icônes
+prop = []
+for i in range(1, 7):  
+    icon = pygame.image.load(f"Logo{i}.png")
+    prop.append(icon)
+
+# Liste des noms de jeux associés
+jeux_noms = ["Cat Runner", "Flappy Bird", "Morpion", "Tamagotchi", "Pacman", "Puissance 4"]
+
+# Variables pour l'animation du carousel
+current_index = 0
+taille_milieu = 200
+taille_cote = 50
+espace = 250
+scroll_offset = 0
+animating = False
+direction = 0
+size_progress = 1
+animation_speed = 0.02
+
+# Charger l'image du bouton "Jouer"
+bouton_image = pygame.image.load("bouton_jouer.png")
+
+# Police pour afficher le nom du jeu
+font = pygame.font.Font(None, 50)  # Taille du texte 50px
+
+# Classe Bouton
+class Bouton(pygame.sprite.Sprite):
+    def __init__(self, x, y, image_bouton, action, opacite):
+        super().__init__()
+        self.image = pygame.image.load(image_bouton).convert_alpha()
+        self.image.set_alpha(opacite)
+        self.rect = self.image.get_rect()
+        self.rect.center = (x, y)
+        self.action = action
+
+    def update(self, event):
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            if self.rect.collidepoint(event.pos):
+                if self.action:
+                    self.action(current_index + 1)  # On passe l'index du jeu sélectionné
+
+# Fonction Play
+def play(index):
+    jeux = {
+        1: "Cat run/cat runner v1.0.py",
+        2: "Flappy bird/Flappy Bird.py",
+        3: "Morpion/Morpion.py",
+        4: "Tamagotchi/Tamagotchi.py",
+        5: "Pacman\Code_python.py",
+        6: "Puissance4\main4.py"
+    }
+    
+    if index in jeux:
+        pygame.mixer.music.stop()
+        subprocess.run(["python", jeux[index]])
+
+        # Revenir au premier plan après la fermeture du jeu
+        time.sleep(0.1)
+        fenetre = gw.getWindowsWithTitle("Menu")
+        if fenetre:
+            pygame.mixer.music.play(-1)
+            fenetre[0].activate()
+
+# Création du bouton
+bouton_play = Bouton(screen_width // 2, screen_height // 1.3, "bouton_jouer.png", play, 255)
+
+# Groupe de sprites
+all_sprites = pygame.sprite.Group()
+all_sprites.add(bouton_play)
+
+# Boucle principale
+running = True
+clock = pygame.time.Clock()
+
+while running:
+    clock.tick(60)
+    screen.fill(couleur)
+    anim_timer += clock.get_time()
+    if anim_timer >= anim_delai: #le timer est utiliser comme délai d'alternance entre les images(quand le timer = delai,il change d'image)
+        anim_timer = 0 
+        for cle, val in imgs.items():
+            if val == current_image :
+                current_image = imgs[(cle+1)%4+1]
+    screen.blit(current_image, (0, 0))
+
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            running = False
+        elif event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_RIGHT and not animating:
+                direction = 1
+                animating = True
+                size_progress = 0
+            elif event.key == pygame.K_LEFT and not animating:
+                direction = -1
+                animating = True
+                size_progress = 0
+
+        # Met à jour le bouton avec les événements
+        bouton_play.update(event)
+
+    # Animation fluide des icônes
+    if animating:
+        size_progress += animation_speed
+        scroll_offset = (espace * direction) * (1 - size_progress)
+        if size_progress >= 1:
+            animating = False
+            current_index = (current_index + direction) % len(prop)
+            scroll_offset = 0
+            size_progress = 1
+
+    # Affichage des icônes
+    for i in range(-1, 2):
+        if animating:
+            index = (current_index + i + direction) % len(prop)
+        else:
+            index = (current_index + i) % len(prop)
+
+        icon_size_scaled = (
+            taille_cote + (taille_milieu - taille_cote) * size_progress if i == 0
+            else taille_milieu - (taille_milieu - taille_cote) * size_progress
+        )
+
+        x_position = (screen_width / 2) - (icon_size_scaled / 2) + (i * espace) + scroll_offset
+        y_position = screen_height / 2.5 - icon_size_scaled / 2
+
+        icon_scaled = pygame.transform.scale(prop[index], (int(icon_size_scaled), int(icon_size_scaled)))
+        screen.blit(icon_scaled, (x_position, y_position))
+
+    # Affichage du nom du jeu sélectionné
+    nom_jeu = jeux_noms[current_index]
+    texte_surface = font.render(nom_jeu, True, blanc)
+    texte_rect = texte_surface.get_rect(center=(screen_width // 2, screen_height // 1.7))
+    screen.blit(texte_surface, texte_rect)
+
+    # Dessiner le bouton "Jouer"
+    all_sprites.draw(screen)
+
+    # Mise à jour de l'écran
+    pygame.display.flip()
+
+
+pygame.mixer.music.stop()
+pygame.quit()
