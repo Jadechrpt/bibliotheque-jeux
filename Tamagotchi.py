@@ -234,6 +234,7 @@ while True :
             if event.type == pygame.MOUSEBUTTONUP :
                 if 225 < x_souris < 475 and 250 < y_souris < 375:
                     inventaire.remove(objet_actuel)
+                    index_objet = max(0, index_objet - 1) if inventaire else 0
                     deplacerobjet, objet_x, objet_y = False, 0, 520
                     if objet_actuel == "eau" or objet_actuel == "lait":
                         besoins["Soif"] += 30
