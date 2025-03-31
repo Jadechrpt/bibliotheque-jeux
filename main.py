@@ -229,7 +229,9 @@ while running:
             
             if event.key == pygame.K_z:  # Touche Z
                 if game.start_party:
+                    pygame.delay
                     game.player.launch_projectile()  # Lancer un projectile
+                    pygame.time.delay(delay * 1000)
                 # detecter si toucvhe espace appuyée pour projectile
             elif event.key == pygame.K_SPACE and not game.start_party:
                 if menu == "level_select":
