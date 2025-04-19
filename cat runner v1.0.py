@@ -311,11 +311,7 @@ while main :
                                 
                                 arbreRect = arbre.get_rect()
                                 arbreRect.topleft = (pos_x_arbre, pos_y_arbre)
-                                """
-                                if len(obs_t)>= 1 :
-                                        if obs_t[0] == 1 and pos_x_arbre <= largeur_screen/2 and len(obs_t)<2:
-                                                        obs_t.append(random.choice(obstacles))
-                                """
+                                
                                 if chatRect.colliderect(arbreRect):
                                         if chatMask.overlap(arbreMask,(pos_x_arbre-chatRect.topleft[0],pos_y_arbre-chatRect.topleft[1])):
                                                 death_count+= 1
@@ -332,11 +328,7 @@ while main :
                                         pos_x_arbreG, pos_y_arbreG = screen.get_width(), sol
                                 arbreGRect = arbreG.get_rect()
                                 arbreGRect.topleft = (pos_x_arbreG, pos_y_arbreG)
-                                """
-                                if len(obs_t)>= 1 :
-                                        if obs_t[0] == 2 and pos_x_arbreG <= largeur_screen/2 and len(obs_t)<2:
-                                                        obs_t.append(random.choice(obstacles))
-                                """
+                                
                                 if chatRect.colliderect(arbreGRect):
                                         if chatMask.overlap(arbreGMask,(pos_x_arbreG-chatRect.topleft[0],pos_y_arbreG-chatRect.topleft[1])):
                                                 death_count+= 1
@@ -350,11 +342,7 @@ while main :
                                         pos_x_pelote, pos_y_pelote = screen.get_width(), sol
                                 peloteRect = pelote.get_rect()
                                 peloteRect.topleft = (pos_x_pelote, pos_y_pelote)
-                                """
-                                if len(obs_t)>= 1 :
-                                        if obs_t[len(obs_t)-1] == 3 and pos_x_pelote <= largeur_screen/2 and len(obs_t)<2:
-                                                        obs_t.append(random.choice(obstacles))
-                                """
+                                
                                 if chatRect.colliderect(peloteRect):
                                         if chatMask.overlap(peloteMask,(pos_x_pelote-chatRect.topleft[0],pos_y_pelote-chatRect.topleft[1])):
                                                 death_count+= 1
@@ -373,11 +361,7 @@ while main :
                                 if pos_x_oiseau <= -largeur_oiseau:  # Si l'oiseau sort de l'écran
                                         obs_t.remove(4)
                                         pos_x_oiseau, pos_y_oiseau = screen.get_width(), random.choice([260, 320, 380])
-                                """
-                                if len(obs_t)>= 1 :
-                                        if obs_t[0] == 4 and pos_x_oiseau <= largeur_screen/2 and len(obs_t)<2:
-                                                        obs_t.append(random.choice(obstacles))
-                                """                        
+                                                    
                                 oiseau_rect1 = oiseau.get_rect()
                                 oiseau_rect1.topleft = (pos_x_oiseau, pos_y_oiseau)
                                 
