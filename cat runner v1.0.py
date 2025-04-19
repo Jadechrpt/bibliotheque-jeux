@@ -434,7 +434,5 @@ while main :
                                 high_score(points)
                                 points = 0
                                 restart()
-                        if quitter == 1:
-                                continuer = False
         pygame.mixer.music.stop()
 pygame.quit()
