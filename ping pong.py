@@ -166,8 +166,9 @@ while ping:
                         if event.key == pygame.K_p:
                                 pause_jeu = True
                         elif event.key == pygame.K_h:
-                                last_score = score_right
-                                high_score(last_score)
+                                if mode == "seul":
+                                        last_score = score_right
+                                        high_score(last_score)
                                 mode = mode_jeu()
                 elif event.type == pygame. QUIT:
                         pygame.quit()
@@ -175,8 +176,9 @@ while ping:
                 elif event.type == pygame.MOUSEBUTTONDOWN and pauseRect.collidepoint(event.pos):
                         pause_jeu = True
                 elif event.type == pygame.MOUSEBUTTONDOWN and homeRect.collidepoint(event.pos):
-                        last_score = score_right
-                        high_score(last_score) 
+                        if mode == "seul":
+                                last_score = score_right
+                                high_score(last_score) 
                         mode = mode_jeu()
         while pause_jeu :
                 pygame.mixer.music.pause()
@@ -235,6 +237,7 @@ while ping:
                 if ball_x <= 0:
                         score_right += 1
                         ball_x, ball_y, ball_speed_x, ball_speed_y = reset_ball()
+                        left_paddle_y, right_paddle_y = reset_paddles()
                         
                 if ball_x >= WIDTH:
                         score_left += 1
