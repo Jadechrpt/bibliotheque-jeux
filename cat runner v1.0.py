@@ -116,6 +116,7 @@ sauter = False
 vitesse_saut = 0 
 highest_score = 0
 recommencer = 1
+obs_t = []
 
 # Vérifie la collision entre deux rectangles        
 def collision(rect1, rect2):
@@ -302,7 +303,7 @@ while main :
                                 obs_t = [] #liste des obstacles présents sur l'écran
                                 obs_t.append(random.choice(obstacles))
                                 
-                        if 1 in obs_t : #arbre
+                        if 1 in obs_t : #ARBRE
                                 #defilement des arbres
                                 pos_x_arbre -= vitesse_g
                                 if pos_x_arbre <= -largeur_arbre :
@@ -316,6 +317,7 @@ while main :
                                         if chatMask.overlap(arbreMask,(pos_x_arbre-chatRect.topleft[0],pos_y_arbre-chatRect.topleft[1])):
                                                 death_count+= 1
                                                 death=1
+                                                sauter = False
                                                 pygame.mixer.music.pause()
 
                                 
@@ -329,12 +331,13 @@ while main :
                                 arbreGRect = arbreG.get_rect()
                                 arbreGRect.topleft = (pos_x_arbreG, pos_y_arbreG)
                                 
-                                if chatRect.colliderect(arbreGRect):
+                                if chatRect.colliderect(arbreGRect) :
                                         if chatMask.overlap(arbreGMask,(pos_x_arbreG-chatRect.topleft[0],pos_y_arbreG-chatRect.topleft[1])):
                                                 death_count+= 1
                                                 death=1
+                                                sauter = False
                                                 pygame.mixer.music.pause()
-                                                
+                                                                                                
                         if 3 in obs_t :#PELOTE
                                 pos_x_pelote -= vitesse_g
                                 if pos_x_pelote <= -largeur_pelote :
@@ -347,10 +350,10 @@ while main :
                                         if chatMask.overlap(peloteMask,(pos_x_pelote-chatRect.topleft[0],pos_y_pelote-chatRect.topleft[1])):
                                                 death_count+= 1
                                                 death=1
+                                                sauter = False
                                                 pygame.mixer.music.pause()
-                               
-
-                        if 4 in obs_t : #Oiseau
+                                                
+                        if 4 in obs_t : #OISEAU
                                 # Animation des oiseaux
                                 current_time = pygame.time.get_ticks()  # Temps actuel en millisecondes
                                 if current_time - last_bird_update > bird_animation_speed:  # Temps écoulé pour changer d'image
@@ -360,13 +363,14 @@ while main :
                                 pos_x_oiseau -= vitesse_g+0.7
                                 if pos_x_oiseau <= -largeur_oiseau:  # Si l'oiseau sort de l'écran
                                         obs_t.remove(4)
-                                        pos_x_oiseau, pos_y_oiseau = screen.get_width(), random.choice([260, 320, 380])
-                                                    
+                                        pos_x_oiseau, pos_y_oiseau = screen.get_width(), random.choice([260, 320, 380])                    
+
                                 oiseau_rect1 = oiseau.get_rect()
                                 oiseau_rect1.topleft = (pos_x_oiseau, pos_y_oiseau)
                                 
                                 oiseau_rect2 = oiseau2.get_rect()
                                 oiseau_rect2.topleft = (pos_x_oiseau2, pos_y_oiseau2)
+                                
                                 if (chatRect.colliderect(oiseau_rect1) or chatRect.colliderect(oiseau_rect2)):
                                         death_count+= 1
                                         death=1
@@ -429,10 +433,11 @@ while main :
                         if quitter == 1:
                                 continuer = False       
                         pygame.display.update()
-                       
+
                         if death == 1 and recommencer == 0:
                                 high_score(points)
                                 points = 0
-                                restart()
+                                restart() 
+
         pygame.mixer.music.stop()
 pygame.quit()
